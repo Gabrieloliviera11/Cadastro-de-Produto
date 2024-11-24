@@ -9,10 +9,6 @@ import java.util.List;
 
 @Path("projeto/produto")
 public class ProdutoRecurso {
-    @GET
-    public List<Produto> listartudo(){
-        return Produto.listAll();
-    }
     @POST
     @Transactional
     public Response adicionarProduto(Produto produto){
