@@ -8,7 +8,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
-
 @Path("projeto/unidadefederativa")
 public class UnidadeFederativaRecurso {
     @POST
