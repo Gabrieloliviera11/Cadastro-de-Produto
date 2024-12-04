@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- Declaração de cabeçalho XML -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion> <!-- Define a versão do modelo POM -->
+    <groupId>br.edu.unifio</groupId> <!-- Definição do groupId do projeto, que representa a organização -->
+    <artifactId>projeto</artifactId> <!-- Definição do nome do artefato do projeto -->
+    <version>2024.09.10</version> <!-- Versão do projeto -->
+
+    <properties> <!-- Definição de propriedades globais do projeto -->
+        <compiler-plugin.version>3.13.0</compiler-plugin.version> <!-- Versão do Maven Compiler Plugin -->
+        <maven.compiler.release>21</maven.compiler.release> <!-- Versão do Java usada para compilação -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> <!-- Define o encoding do projeto como UTF-8 -->
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> <!-- Define o encoding do output de relatórios -->
+        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id> <!-- ID do artefato Quarkus BOM (Bill of Materials) -->
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id> <!-- GroupId do Quarkus BOM -->
+        <quarkus.platform.version>3.13.3</quarkus.platform.version> <!-- Versão da plataforma Quarkus -->
+        <skipITs>true</skipITs> <!-- Configuração para pular testes de integração por padrão -->
+        <surefire-plugin.version>3.2.5</surefire-plugin.version> <!-- Versão do Maven Surefire Plugin para testes -->
+    </properties>
+
+    <dependencyManagement> <!-- Gerenciamento de dependências -->
+        <dependencies>
+            <dependency>
+                <groupId>${quarkus.platform.group-id}</groupId> <!-- Uso do BOM do Quarkus para gerenciar versões -->
+                <artifactId>${quarkus.platform.artifact-id}</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope> <!-- Define o escopo como import para herdar versões das dependências do Quarkus BOM -->
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies> <!-- Declaração das dependências do projeto -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm-panache</artifactId> <!-- Hibernate com Panache para simplificar o uso do JPA -->
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId> <!-- Suporte para criação de endpoints REST com Panache -->
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-jackson</artifactId> <!-- Suporte para JSON com Jackson -->
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-mysql</artifactId> <!-- Driver JDBC para MySQL -->
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc</artifactId> <!-- Suporte para Injeção de Dependências (CDI) -->
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm</artifactId> <!-- Hibernate ORM para Quarkus -->
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5</artifactId> <!-- Suporte a testes com JUnit 5 -->
+            <scope>test</scope> <!-- O escopo é test, então é usado apenas durante os testes -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId> <!-- Lombok para reduzir o código boilerplate em classes Java -->
+            <version>1.18.34</version>
+            <scope>provided</scope> <!-- Escopo provided: necessário apenas em tempo de compilação -->
+        </dependency>
+    </dependencies>
+
+    <build> <!-- Configurações de build -->
+        <plugins>
+            <plugin>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>quarkus-maven-plugin</artifactId> <!-- Plugin do Quarkus para facilitar o build do projeto -->
+                <version>${quarkus.platform.version}</version>
+                <extensions>true</extensions> <!-- Ativa extensões -->
+                <executions>
+                    <execution>
+                        <goals> <!-- Objetivos do plugin -->
+                            <goal>build</goal> <!-- Compila o projeto -->
+                            <goal>generate-code</goal> <!-- Gera código adicional (se necessário) -->
+                            <goal>generate-code-tests</goal> <!-- Gera código para testes -->
+                            <goal>native-image-agent</goal> <!-- Gera a imagem nativa, se configurada -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId> <!-- Plugin para compilação do projeto -->
+                <version>${compiler-plugin.version}</version>
+                <configuration>
+                    <parameters>true</parameters> <!-- Habilita parâmetros para reflexão de tempo de execução -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId> <!-- Plugin para execução de testes unitários -->
+                <version>${surefire-plugin.version}</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                        <maven.home>${maven.home}</maven.home>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId> <!-- Plugin para execução de testes de integração -->
+                <version>${surefire-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal> <!-- Executa testes de integração -->
+                            <goal>verify</goal> <!-- Verifica a saída dos testes de integração -->
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <systemPropertyVariables>
+                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path> <!-- Configuração do caminho da imagem nativa -->
+                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                        <maven.home>${maven.home}</maven.home>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles> <!-- Perfis de build específicos -->
+        <profile>
+            <id>native</id> <!-- Perfil para build de imagens nativas -->
+            <activation>
+                <property>
+                    <name>native</name> <!-- Ativado se a propriedade "native" estiver definida -->
+                </property>
+            </activation>
+            <properties>
+                <skipITs>false</skipITs> <!-- Define para não pular testes de integração -->
+                <quarkus.native.enabled>true</quarkus.native.enabled> <!-- Habilita o build nativo no Quarkus -->
+            </properties>
+        </profile>
+    </profiles>
+</project>
