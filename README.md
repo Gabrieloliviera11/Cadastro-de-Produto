@@ -30,7 +30,7 @@ Instalação e Configuração
 Clone o repositório:
 
 sh
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+git clone https://github.com/Gabrieloliviera11/Cadastro-de-Produto
 Navegue até o diretório do projeto:
 
 sh
